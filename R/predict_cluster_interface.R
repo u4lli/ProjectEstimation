@@ -1,50 +1,51 @@
-setwd(getSrcDirectory(function(x) {x}))
+source("simpleR.R")
 
-if(!require("jsonlite")){
-  install.packages("jsonlite")
+#' @export
+prepareLib <- function(){
+  setwd(getSrcDirectory(function(x) {x}))
+  
+  if(!require("jsonlite")){
+    install.packages("jsonlite")
+  }
+  library(jsonlite)
+  
+  if (!require("C50")) {
+    install.packages("C50", dependencies = TRUE)
+  }
+  library(C50)
 }
-library(jsonlite)
 
-if (!require("C50")) {
-  install.packages("C50", dependencies = TRUE)
+#' @export
+prepareData <- function(){
+  projectdata <- get(load("../model/project_data_with_cluster.rda"))
+  initial_predict_model <- get(load("../model/initial_project_cluster_prediction_model.rda"))
+  apriori_predict_model <- get(load("../model/apriori_project_cluster_prediction_model.rda"))
+  representative_projects <- get(load("../model/representative_project_per_cluster.rda"))
+  project_cluster_summary <- get(load("../model/project_summary_per_cluster.rda"))
+  project_cluster_statisctics <- get(load("../model/project_clusters_statistics.rda"))
+  regression_model_total_amount <- get(load("../model/reg_predict_total_amount_log_with_project_type.rda"))
+  regression_model_total_days <- get(load("../model/reg_predict_total_days_log_with_project_type.rda"))
+  
+  
+  reg_model_file_name_total_amount_prefix <- "../model/reg_predict_total_amount_log_with_project_type_"
+  reg_model_file_name_total_days_prefix <- "../model/reg_predict_total_days_log_with_project_type_"
+  
+  # cluster_count <- length(levels(projectdata$cluster))
+  # reg_model_matrix <- matrix(, nrow = cluster_count, ncol = 2)
+  # for(i in 1:cluster_count){
+  #   filename_total_amount = paste(reg_model_file_name_total_amount_prefix, i, ".rda", sep = "")
+  #   print(filename_total_amount)
+  #   filename_total_days = paste(reg_model_file_name_total_days_prefix, i, ".rda", sep = "")
+  #   reg_model_total_amount <- load(filename_total_amount)
+  #   reg_model_total_days <- load(filename_total_days)
+  #   print(i)
+  #   reg_model_pair <- cbind(reg_model_total_amount, reg_model_total_days)
+  #   reg_model_matrix[i,] <- reg_model_pair
+  # }
+
+
+  no_other_cluster_columns <- !(colnames(projectdata) %in% c("cluster_clara", "cluster_c5.0", "cluster_clara_c5.0"))
 }
-library(C50)
-
-
-# Functions
-signlog <- function(x){sign(x) * log(sign(x)*x + 1)}
-signlog_numeric <- function(x){ if (is.numeric(x)) signlog(x) else x }
-inverse_signlog <- function(x){sign(x)*(exp(1)^(sign(x)*x) -1)}
-
-
-projectdata <- get(load("../model/project_data_with_cluster.rda"))
-initial_predict_model <- get(load("../model/initial_project_cluster_prediction_model.rda"))
-apriori_predict_model <- get(load("../model/apriori_project_cluster_prediction_model.rda"))
-representative_projects <- get(load("../model/representative_project_per_cluster.rda"))
-project_cluster_summary <- get(load("../model/project_summary_per_cluster.rda"))
-project_cluster_statisctics <- get(load("../model/project_clusters_statistics.rda"))
-regression_model_total_amount <- get(load("../model/reg_predict_total_amount_log_with_project_type.rda"))
-regression_model_total_days <- get(load("../model/reg_predict_total_days_log_with_project_type.rda"))
-
-
-reg_model_file_name_total_amount_prefix <- "../model/reg_predict_total_amount_log_with_project_type_"
-reg_model_file_name_total_days_prefix <- "../model/reg_predict_total_days_log_with_project_type_"
-
-# cluster_count <- length(levels(projectdata$cluster))
-# reg_model_matrix <- matrix(, nrow = cluster_count, ncol = 2)
-# for(i in 1:cluster_count){
-#   filename_total_amount = paste(reg_model_file_name_total_amount_prefix, i, ".rda", sep = "")
-#   print(filename_total_amount)
-#   filename_total_days = paste(reg_model_file_name_total_days_prefix, i, ".rda", sep = "")
-#   reg_model_total_amount <- load(filename_total_amount)
-#   reg_model_total_days <- load(filename_total_days)
-#   print(i)
-#   reg_model_pair <- cbind(reg_model_total_amount, reg_model_total_days)
-#   reg_model_matrix[i,] <- reg_model_pair
-# }
-
-
-no_other_cluster_columns <- !(colnames(projectdata) %in% c("cluster_clara", "cluster_c5.0", "cluster_clara_c5.0"))
 
 # Interface function
 #' @export

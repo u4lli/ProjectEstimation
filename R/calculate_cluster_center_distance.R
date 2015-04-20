@@ -1,18 +1,16 @@
-setwd(getSrcDirectory(function(x) {x}))
+# setwd(getSrcDirectory(function(x) {x}))
+# 
+# if(!require("jsonlite")){
+#   install.packages("jsonlite")
+# }
+# library(jsonlite)
+# 
+# if (!require("C50")) {
+#   install.packages("C50", dependencies = TRUE)
+# }
+# library(C50)
 
-if(!require("jsonlite")){
-  install.packages("jsonlite")
-}
-library(jsonlite)
-
-if (!require("C50")) {
-  install.packages("C50", dependencies = TRUE)
-}
-library(C50)
-
-
-# Functions
-signlog <- function(x){sign(x) * log(sign(x)*x + 1)}
+source("simpleR.R")
 
 projectdata <- get(load("../model/project_data_with_cluster.rda"))
 
