@@ -10,13 +10,17 @@
 # }
 # library(C50)
 
-source("simpleR.R")
+# source("simpleR.R")
 
-projectdata <- get(load("../model/project_data_with_cluster.rda"))
+#' @export
+loadProjData <- function(){
+  projectdata <- get(load("../model/project_data_with_cluster.rda"))
+  projectdata
+}
 
 # Convert project cluster center distance into percentage, so that it's easier to show on UI
 #' @export
-calculate_center_distance_as_percentage <- function(){
+calculate_center_distance_as_percentage <- function(projectdata){
   projectdata$cluster_center_dist_as_percent <- 0
   
   clusters <- levels(projectdata$cluster)
@@ -28,6 +32,7 @@ calculate_center_distance_as_percentage <- function(){
   return (projectdata)
 }
 
-projectdata <- calculate_center_distance_as_percentage()
-
-save(projectdata, file = "../model/project_data_with_cluster.rda")
+calcProjectDataAndSave <- function(projData){
+  projectdata <- calculate_center_distance_as_percentage(projData)
+  save(projectdata, file = "../model/project_data_with_cluster.rda")
+}

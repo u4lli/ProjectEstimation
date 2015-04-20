@@ -1,4 +1,4 @@
-source("simpleR.R")
+# source("simpleR.R")
 
 #' @export
 prepareLib <- function(){
@@ -17,18 +17,18 @@ prepareLib <- function(){
 
 #' @export
 prepareData <- function(){
-  projectdata <- get(load("../model/project_data_with_cluster.rda"))
-  initial_predict_model <- get(load("../model/initial_project_cluster_prediction_model.rda"))
-  apriori_predict_model <- get(load("../model/apriori_project_cluster_prediction_model.rda"))
-  representative_projects <- get(load("../model/representative_project_per_cluster.rda"))
-  project_cluster_summary <- get(load("../model/project_summary_per_cluster.rda"))
-  project_cluster_statisctics <- get(load("../model/project_clusters_statistics.rda"))
-  regression_model_total_amount <- get(load("../model/reg_predict_total_amount_log_with_project_type.rda"))
-  regression_model_total_days <- get(load("../model/reg_predict_total_days_log_with_project_type.rda"))
+  data.projectdata <- get(load("../model/project_data_with_cluster.rda"))
+  data.initial_predict_model <- get(load("../model/initial_project_cluster_prediction_model.rda"))
+  data.apriori_predict_model <- get(load("../model/apriori_project_cluster_prediction_model.rda"))
+  data.representative_projects <- get(load("../model/representative_project_per_cluster.rda"))
+  data.project_cluster_summary <- get(load("../model/project_summary_per_cluster.rda"))
+  data.project_cluster_statisctics <- get(load("../model/project_clusters_statistics.rda"))
+  data.regression_model_total_amount <- get(load("../model/reg_predict_total_amount_log_with_project_type.rda"))
+  data.regression_model_total_days <- get(load("../model/reg_predict_total_days_log_with_project_type.rda"))
   
   
-  reg_model_file_name_total_amount_prefix <- "../model/reg_predict_total_amount_log_with_project_type_"
-  reg_model_file_name_total_days_prefix <- "../model/reg_predict_total_days_log_with_project_type_"
+  data.reg_model_file_name_total_amount_prefix <- "../model/reg_predict_total_amount_log_with_project_type_"
+  data.reg_model_file_name_total_days_prefix <- "../model/reg_predict_total_days_log_with_project_type_"
   
   # cluster_count <- length(levels(projectdata$cluster))
   # reg_model_matrix <- matrix(, nrow = cluster_count, ncol = 2)
@@ -44,12 +44,13 @@ prepareData <- function(){
   # }
 
 
-  no_other_cluster_columns <- !(colnames(projectdata) %in% c("cluster_clara", "cluster_c5.0", "cluster_clara_c5.0"))
+  data.no_other_cluster_columns <- !(colnames(data.projectdata) %in% c("cluster_clara", "cluster_c5.0", "cluster_clara_c5.0"))
+  data
 }
 
 # Interface function
 #' @export
-attach_customer_info <- function(input_data){
+attach_customer_info <- function(input_data, projectdata){
 
   customer_info <- head(subset(projectdata, customer == input_data$customer), 1L)
   if(!("customer_termsid" %in% names(input_data)))
@@ -60,7 +61,7 @@ attach_customer_info <- function(input_data){
 }
 
 #' @export
-attach_projmgr_info <- function(input_data){
+attach_projmgr_info <- function(input_data, projectdata){
   if("projmgr" %in% names(input_data)){
     projmgr_info <- head(subset(projectdata, projmgr == input_data$projmgr), 1L)
   }
@@ -74,7 +75,7 @@ attach_projmgr_info <- function(input_data){
 }
 
 #' @export
-prepare_data_for_regression <- function(apriori_data){
+prepare_data_for_regression <- function(apriori_data, projectdata){
   customer_info <- head(subset(projectdata, customer == apriori_data$customer), 1L)
   if(!("customer_project_count" %in% names(apriori_data)))
     apriori_data$customer_project_count <- customer_info$customer_project_count
