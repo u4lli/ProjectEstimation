@@ -16,6 +16,11 @@ prepareLib <- function(){
 }
 
 #' @export
+testLoadedData <- function(){
+  nrow(projectdata)
+}
+
+#' @export
 prepareData <- function(){
   data.projectdata <- get(load("../model/project_data_with_cluster.rda"))
   data.initial_predict_model <- get(load("../model/initial_project_cluster_prediction_model.rda"))
